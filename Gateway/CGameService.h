@@ -1,19 +1,18 @@
 #pragma once
-#include "../ServerEngine/PCH.h"
-#include "../ServerEngine/BaseDefine.h"
+#include "../ServerEngine/baseinet/CServiceBase.h"
 
 class CGameService : public IPacketDispatcher
 {
 private:
 	CGameService();
-	~CGameService();
+	virtual ~CGameService();
 public:
 	static CGameService* GetInstancePtr();
 	bool Init();
 public:
-	virtual bool OnCloseConnect(UINT32 nConnID)override;
-	virtual bool OnNewConnect(UINT32 nConnID)override;
-	virtual bool OnSecondTimer()override;
+	virtual bool OnCloseConnect(UINT32 nConnID);
+	virtual bool OnNewConnect(UINT32 nConnID);
+	virtual bool OnSecondTimer();
 
 };
 

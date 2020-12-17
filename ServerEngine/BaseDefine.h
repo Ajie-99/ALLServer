@@ -2,17 +2,18 @@
 #include "PCH.h"
 
 
-class IDataHandler
+
+#define RECV_BUF_SIZE               8192
+
+struct IDataHandler
 {
-public:
 	//virtual bool OnDataHandle(IDataBuffer* pDataBuffer, UINT32 nConnID) = 0;
 	virtual bool OnCloseConnect(UINT32 nConnID) = 0;
 	virtual bool OnNewConnect(UINT32 nConnID) = 0;
 };
 
-class IPacketDispatcher
+struct IPacketDispatcher
 {
-public:
 	//virtual BOOL DispatchPacket(NetPacket* pNetPacket) = 0;
 	virtual bool OnCloseConnect(UINT32 nConnID) = 0;
 	virtual bool OnNewConnect(UINT32 nConnID) = 0;

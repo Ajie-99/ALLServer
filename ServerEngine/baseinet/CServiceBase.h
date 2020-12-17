@@ -1,18 +1,16 @@
 #pragma once
-#include "../PCH.h"
-#include "../BaseDefine.h"
-
+#include "CNetManager.h"
 class CServiceBase : public IDataHandler
 {
-private:
+public:
 	CServiceBase();
-	~CServiceBase();
+	virtual ~CServiceBase();
 public:
 	static	CServiceBase*	GetInstancePtr();
-	bool					Start(std::string& strListenIp, UINT32 nPort, UINT32 nMaxConn, void *pIPacketDispatcher);
+	bool					Start(std::string& strListenIp, UINT32 nPort, UINT32 nMaxConn, IPacketDispatcher*pIPacketDispatcher);
+public:
+	virtual bool			OnCloseConnect(UINT32 nConnID);
+	virtual bool			OnNewConnect(UINT32 nConnID);
+	IPacketDispatcher* m_pIPacketDispatcher;
 private:
-
-
-	IPacketDispatcher*		m_pIPacketDispatcher;
-	
 };

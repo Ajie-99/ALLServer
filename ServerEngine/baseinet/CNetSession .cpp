@@ -1,11 +1,9 @@
-#include "../PCH.h"
-#include "../Platform.h"
 #include "CNetSession .h"
-#include "../BaseDefine.h"
 
-
-CNetSession::CNetSession(boost::asio::io_service& ioservice):m_hSocket(ioservice)
+CNetSession::CNetSession(boost::asio::io_service& ioservice) :m_hSocket(ioservice)
 {
+	memset(m_pRecvBuf, 0, sizeof(m_pRecvBuf));
+	m_pDataHandler = nullptr;
 	m_dwSessionID = 0;
 	m_pbufPos = m_pRecvBuf;
 	m_dwDataLen = 0;
@@ -40,6 +38,7 @@ UINT32		CNetSession::GetSessionID()
 
 void		CNetSession::SetDataHandler(IDataHandler* pDataHandler)
 {
+	if (nullptr == pDataHandler)assert(0);
 	m_pDataHandler = pDataHandler;
 }
 IDataHandler* CNetSession::GetDataHandler()
@@ -92,26 +91,27 @@ CNetSessionMrg* CNetSessionMrg::GetInstancePtr()
 }
 bool				CNetSessionMrg::InitConnectionList(UINT32 nMaxCons, boost::asio::io_service& ioservice)
 {
-	m_NetSessionVector.assign(nMaxCons, nullptr);
+	//m_NetSessionVector.assign(nMaxCons, nullptr);
 	for (UINT32 i = 0; i < nMaxCons; i++)
 	{
-		std::shared_ptr<CNetSession>CNetSession_ = std::make_shared<CNetSession>(ioservice);
+		CNetSession*CNetSession_ = new CNetSession(ioservice);
 		CNetSession_->SetSessionID(i + 1);
 		m_NetSessionVector.push_back(CNetSession_);
 	}
 
 	return false;
 }
-std::shared_ptr<CNetSession> CNetSessionMrg::CreateNetSession()
+CNetSession* CNetSessionMrg::CreateNetSession()
 {
-	std::shared_ptr<CNetSession> CNetSession_{};
+	m_GetSessionMutex.lock();
+	CNetSession* CNetSession_ = nullptr;
 	if (m_NetSessionVector.size() <= 0)
 	{
 		return CNetSession_;
 	}
-	m_GetSessionMutex.lock();
 	CNetSession_ = m_NetSessionVector.front();
-	m_NetSessionVector.pop_back();
+	m_NetSessionVector.pop_front();
+
 	m_GetSessionMutex.unlock();
 
 	return CNetSession_;

@@ -1,21 +1,14 @@
 #pragma once
+#include "../BaseDefine.h"
+#include "../Platform.h"
 
-#define RECV_BUF_SIZE               8192
-
-
-
-class IDataHandler;
 
 class CNetSession
 {
 public:
 	CNetSession(boost::asio::io_service& ioservice);
 	~CNetSession();
-
-
-
 	boost::asio::ip::tcp::socket& GetSocket();
-
 	void			SetSessionID(UINT32 dwSessionID);
 	UINT32			GetSessionID();
 	void			SetDataHandler(IDataHandler* pDataHandler);
@@ -41,8 +34,8 @@ public:
 	~CNetSessionMrg();
 	static CNetSessionMrg* GetInstancePtr();
 	bool				InitConnectionList(UINT32 nMaxCons, boost::asio::io_service& ioservice);
-	std::shared_ptr<CNetSession> CreateNetSession();
+	CNetSession* CreateNetSession();
 private:
 	std::mutex			m_GetSessionMutex;
-	std::vector<std::shared_ptr<CNetSession>>m_NetSessionVector;
+	std::list<CNetSession*>m_NetSessionVector;
 };

@@ -1,9 +1,5 @@
-#include "../PCH.h"
-#include "../Platform.h"
-
 #include "CNetManager.h"
-#include "CNetSession .h"
-#include "../BaseDefine.h"
+
 
 
 CNetManager::CNetManager()
@@ -12,7 +8,7 @@ CNetManager::CNetManager()
 }
 CNetManager::~CNetManager()
 {
-
+	m_pBufferHandler = nullptr;
 }
 
 CNetManager* CNetManager::GetInstancePtr()
@@ -29,16 +25,16 @@ bool CNetManager::Start(std::string& strListenIp, UINT32 nPort, UINT32 nMaxConn,
 	CNetSessionMrg::GetInstancePtr()->InitConnectionList(nMaxConn, m_IoService);
 
 	boost::asio::ip::tcp::endpoint ep(boost::asio::ip::address_v4::from_string(strListenIp), nPort);
-	m_pAcceptor = std::make_shared<boost::asio::ip::tcp::acceptor>(m_IoService, ep, true);
+	m_pAcceptor = new boost::asio::ip::tcp::acceptor(m_IoService, ep, true);
 
 	WaitForConnet();
 
-	m_pWorkThread = std::make_shared<std::thread>(boost::bind(&boost::asio::io_service::run, &m_IoService));
-	return false;
+	m_pWorkThread = new std::thread(boost::bind(&boost::asio::io_service::run, &m_IoService));
+	return true;
 }
 
 
-void CNetManager::HandleAccept(const std::shared_ptr<CNetSession>& NetSession_, const boost::system::error_code& e)
+void CNetManager::HandleAccept(CNetSession* NetSession_, const boost::system::error_code& e)
 {
 	if (e)
 	{
@@ -54,9 +50,10 @@ void CNetManager::HandleAccept(const std::shared_ptr<CNetSession>& NetSession_, 
 
 bool CNetManager::WaitForConnet()
 {
-	std::shared_ptr<CNetSession> CNetSession_ = CNetSessionMrg::GetInstancePtr()->CreateNetSession();
+	CNetSession* CNetSession_ = CNetSessionMrg::GetInstancePtr()->CreateNetSession();
+	if (!CNetSession_)return false;
 	CNetSession_->SetDataHandler(m_pBufferHandler);
-
+	
 	m_pAcceptor->async_accept(CNetSession_->GetSocket(), boost::bind(&CNetManager::HandleAccept, this, CNetSession_, boost::asio::placeholders::error));
-	return false;
+	return true;
 }

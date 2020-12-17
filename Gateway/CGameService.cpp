@@ -1,10 +1,12 @@
-#include "CGameService.h"
-#include "../ServerEngine/baseinet/CServiceBase.h"
 #include "../ServerEngine/CServerConfig.h"
+#include "../Common/CommonFunc.h"
+
+#include "CGameService.h"
+
 
 CGameService::CGameService()
 {
-
+	CommonFunc::SetWorkDir();
 }
 
 CGameService::~CGameService()
@@ -23,23 +25,23 @@ bool CGameService::Init()
 {
 	bool bRet = false;
 
-	ServerConfigInfo Clf = CServerConfig::GetInstancePtr()->GetServerInfoByServerName("GatWay");
-	bRet = CServiceBase::GetInstancePtr()->Start(Clf.Ip, Clf.Prot, Clf.MaxConct, this);
+	ServerConfigInfo sClf = CServerConfig::GetInstancePtr()->GetServerInfoByServerName("GatWay");
+	CServiceBase::GetInstancePtr()->Start(sClf.Ip, sClf.Prot, sClf.MaxConct, this);
 	return bRet;
 }
 
 
 bool CGameService::OnCloseConnect(UINT32 nConnID)
 {
-	return false;
+	return true;
 }
 
 bool CGameService::OnNewConnect(UINT32 nConnID)
 {
 
-	return false;
+	return true;
 }
 bool CGameService::OnSecondTimer()
 {
-	return false;
+	return true;
 }
