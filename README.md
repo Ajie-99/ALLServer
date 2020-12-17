@@ -1,15 +1,14 @@
 # ALLServer
-±àÒëÆ÷:vs2019  
+ç¼–è¯‘å™¨:vs2019  
 boost:1.75  
-rapidjson:¹ÙÍø×îĞÂ  
+rapidjson:å®˜ç½‘æœ€æ–°  
 protobuf:3.0  
 
 
 
-
-±àÒë²½Öè£º  
+ç¼–è¯‘æ­¥éª¤ï¼š  
 1.Common  
 2.ServerEngine  
-3.ÆäËû  
+3.å…¶ä»–  
 
-½øĞĞÖĞ....Debug_x64  
+è¿›è¡Œä¸­....Debug_x64  
