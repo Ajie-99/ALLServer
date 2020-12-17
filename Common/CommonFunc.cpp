@@ -17,7 +17,7 @@ std::string CommonFunc::GetWorkDir()
 }
 std::string CommonFunc::GetCurrentExeDir()
 {
-	char szPath[1024] = { 0 };
+	char szPath[1024]{};
 	GetModuleFileNameA(NULL, szPath, 1024);
 	char* p = strrchr(szPath, '\\');
 	* p = 0;

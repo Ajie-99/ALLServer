@@ -53,7 +53,6 @@ bool CNetManager::WaitForConnet()
 	CNetSession* CNetSession_ = CNetSessionMrg::GetInstancePtr()->CreateNetSession();
 	if (!CNetSession_)return false;
 	CNetSession_->SetDataHandler(m_pBufferHandler);
-	
 	m_pAcceptor->async_accept(CNetSession_->GetSocket(), boost::bind(&CNetManager::HandleAccept, this, CNetSession_, boost::asio::placeholders::error));
 	return true;
 }
