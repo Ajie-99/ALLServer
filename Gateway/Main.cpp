@@ -2,9 +2,11 @@
 
 int main()
 {
-	CGameService::GetInstancePtr()->Init();
+	if (CGameService::GetInstancePtr()->Init())
+	{
+		CGameService::GetInstancePtr()->Run();
+	}
 
+	std::cin.get();
 	return 0;
 }
-
-

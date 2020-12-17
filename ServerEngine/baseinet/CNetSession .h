@@ -20,6 +20,7 @@ public:
 	boost::asio::ip::tcp::socket	m_hSocket;
 private:
 	UINT32							m_dwSessionID;
+	void							*m_pCurRecvBuffer;
 	CHAR							m_pRecvBuf[RECV_BUF_SIZE];
 	CHAR							*m_pbufPos;
 	UINT32							m_dwDataLen;

@@ -26,11 +26,18 @@ bool CGameService::Init()
 	bool bRet = false;
 
 	ServerConfigInfo sClf = CServerConfig::GetInstancePtr()->GetServerInfoByServerName("GatWay");
-	CServiceBase::GetInstancePtr()->Start(sClf.Ip, sClf.Prot, sClf.MaxConct, this);
+	bRet = CServiceBase::GetInstancePtr()->Start(sClf.Ip, sClf.Prot, sClf.MaxConct, this);
 	return bRet;
 }
 
-
+bool CGameService::Run()
+{
+	for (;;)
+	{
+		CServiceBase::GetInstancePtr()->Update();
+	}
+}
+//////////////////////////////////////////////////////////////////////////
 bool CGameService::OnCloseConnect(UINT32 nConnID)
 {
 	return true;
@@ -38,6 +45,7 @@ bool CGameService::OnCloseConnect(UINT32 nConnID)
 
 bool CGameService::OnNewConnect(UINT32 nConnID)
 {
+	std::cout << "有链接进来  :" << nConnID << "   " << std::endl;
 
 	return true;
 }
@@ -45,3 +53,4 @@ bool CGameService::OnSecondTimer()
 {
 	return true;
 }
+

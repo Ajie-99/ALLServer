@@ -7,6 +7,7 @@ CNetSession::CNetSession(boost::asio::io_service& ioservice) :m_hSocket(ioservic
 	m_dwSessionID = 0;
 	m_pbufPos = m_pRecvBuf;
 	m_dwDataLen = 0;
+	m_pCurRecvBuffer = nullptr;
 }
 CNetSession::~CNetSession()
 {
@@ -46,19 +47,7 @@ IDataHandler* CNetSession::GetDataHandler()
 	return m_pDataHandler;
 }
 
-bool	CNetSession::HandleRecvEvent(UINT32 dwBytes)
-{
-	m_dwDataLen += dwBytes;
 
-	//1.提取数据
-	if (0 == m_dwDataLen)
-	{
-		return true;
-	}
-
-	//2.继续接收没有接收完的
-	return DoReceive();
-}
 void	CNetSession::HandReaddata(const boost::system::error_code& error, UINT32 len)
 {
 	if (error)
@@ -67,6 +56,30 @@ void	CNetSession::HandReaddata(const boost::system::error_code& error, UINT32 le
 		return;
 	}
 	HandleRecvEvent(len);
+}
+
+bool	CNetSession::HandleRecvEvent(UINT32 dwBytes)
+{
+	m_dwDataLen += dwBytes;
+	if (0 == m_dwDataLen)
+	{
+		return true;
+	}
+	//1.提取数据
+	for (;;)
+	{
+		if (m_pCurRecvBuffer != nullptr)
+		{
+			//进到这里面表示数据还没接收完，要继续
+		}
+
+		PacketHeader* pHeader = (PacketHeader*)m_pRecvBuf;
+	}
+	//2.验证数据
+		//2.1验证成功分发消息
+		//2.2验证失败不做处理,或者断开socket
+	//3.继续接收没有接收完的
+	return DoReceive();
 }
 
 bool CNetSession::DoReceive()

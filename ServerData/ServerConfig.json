@@ -6,7 +6,24 @@
 			"ServerName":"GatWay",
 			"ServerId":1,
 			"Ip":"0.0.0.0",
-			"Prot":28880,
+			"Prot":27770,
+			"MaxConct":20
+		}
+		,
+		"ServerTest":
+		{
+			"ServerName":"ServerTest",
+			"ServerId":2,
+			"Ip":"0.0.0.0",
+			"Prot":27771,
+			"MaxConct":20
+		},
+		"ClientTest":
+		{
+			"ServerName":"ClientTest",
+			"ServerId":1,
+			"Ip":"127.0.0.1",
+			"Prot":27770,
 			"MaxConct":20
 		}
 	}

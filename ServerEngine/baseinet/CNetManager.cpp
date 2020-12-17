@@ -57,3 +57,28 @@ bool CNetManager::WaitForConnet()
 	m_pAcceptor->async_accept(CNetSession_->GetSocket(), boost::bind(&CNetManager::HandleAccept, this, CNetSession_, boost::asio::placeholders::error));
 	return true;
 }
+
+
+//
+
+void CNetManager::HandleConnect(CNetSession* pNetSession, const boost::system::error_code& e)
+{
+	if (e)
+	{
+		//pNetSession->Close();
+		return;
+	}
+	m_pBufferHandler->OnNewConnect(pNetSession->GetSessionID());
+	pNetSession->DoReceive();
+}
+CNetSession* CNetManager::ConnectTo_Async(std::string strIpAddr, UINT16 sPort)
+{
+	CNetSession* pNetSession = CNetSessionMrg::GetInstancePtr()->CreateNetSession();
+	boost::asio::ip::tcp::resolver resolver(m_IoService);
+	boost::asio::ip::tcp::resolver::query query(strIpAddr, CommonConvert::IntToString(sPort));
+	boost::asio::ip::tcp::resolver::iterator enditor = resolver.resolve(query);
+	pNetSession->SetDataHandler(m_pBufferHandler);
+	boost::asio::async_connect(pNetSession->GetSocket(), enditor, boost::bind(&CNetManager::HandleConnect, this, pNetSession, boost::asio::placeholders::error));
+
+	return pNetSession;
+}

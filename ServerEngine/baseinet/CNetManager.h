@@ -8,11 +8,13 @@ public:
 	~CNetManager();
 public:
 	bool Start(std::string& strListenIp, UINT32 nPort, UINT32 nMaxConn, IDataHandler* pBufferHandler);
+	CNetSession* ConnectTo_Async(std::string strIpAddr, UINT16 sPort);
 private:
-	bool WaitForConnet();
-	void HandleAccept(CNetSession* NetSession_, const boost::system::error_code& e);
+	bool			WaitForConnet();
+	void			HandleAccept(CNetSession* NetSession_, const boost::system::error_code& e);
+
+	void			HandleConnect(CNetSession* pNetSession, const boost::system::error_code& e);
 private:
-	 
 	IDataHandler*										m_pBufferHandler;
 	boost::asio::io_service								m_IoService;
 	boost::asio::ip::tcp::acceptor						*m_pAcceptor;

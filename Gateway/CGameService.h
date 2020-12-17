@@ -9,6 +9,7 @@ private:
 public:
 	static CGameService* GetInstancePtr();
 	bool Init();
+	bool Run();
 public:
 	virtual bool OnCloseConnect(UINT32 nConnID);
 	virtual bool OnNewConnect(UINT32 nConnID);

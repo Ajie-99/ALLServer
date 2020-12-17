@@ -7,6 +7,7 @@
 #include <iostream>
 #include <vector>
 #include <list>
+#include <deque>
 #include <unordered_map>
 #include <unordered_set>
 #include <map>
@@ -21,3 +22,4 @@
 #include <memory>
 #include <fstream>
 #include <iterator>
+#include <assert.h>
