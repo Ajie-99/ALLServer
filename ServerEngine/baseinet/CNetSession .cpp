@@ -57,7 +57,12 @@ void	CNetSession::HandReaddata(const boost::system::error_code& error, UINT32 le
 	}
 	HandleRecvEvent(len);
 }
+void		CNetSession::HandWritedata(const boost::system::error_code& error, size_t len)
+{
+	if (error)return;
 
+	DoSend();
+}
 bool	CNetSession::HandleRecvEvent(UINT32 dwBytes)
 {
 	m_dwDataLen += dwBytes;
@@ -68,12 +73,18 @@ bool	CNetSession::HandleRecvEvent(UINT32 dwBytes)
 	//1.提取数据
 	for (;;)
 	{
+		std::cout <<"---来至"<<m_dwSessionID<< "的数据---" << std::endl;
 		if (m_pCurRecvBuffer != nullptr)
 		{
 			//进到这里面表示数据还没接收完，要继续
 		}
-
 		PacketHeader* pHeader = (PacketHeader*)m_pRecvBuf;
+		IDataBuffer* pDataBuffer = CBufferAllocator::GetInstancePtr()->AllocDataBuff(m_dwDataLen);
+		memcpy(pDataBuffer->GetBuffer(), m_pbufPos, m_dwDataLen);
+
+		std::string b = pDataBuffer->GetBuffer() + sizeof(PacketHeader);
+		std::cout << "-------"<< b <<"-----------"<<std::endl;
+		break;
 	}
 	//2.验证数据
 		//2.1验证成功分发消息
@@ -88,6 +99,35 @@ bool CNetSession::DoReceive()
 	return true;
 }
 
+
+bool CNetSession::DoSend()
+{
+	int nSendSize = 0;
+	IDataBuffer * pBuffer = nullptr;
+	IDataBuffer* pSendedBuf = nullptr;
+	char buf[1024]{};
+	while (lockfree_queue.pop(pBuffer))
+	{
+		nSendSize += pBuffer->GetTotalLenth();
+		pSendedBuf = CBufferAllocator::GetInstancePtr()->AllocDataBuff(RECV_BUF_SIZE);
+
+
+		pBuffer->CopyTo(buf, pBuffer->GetTotalLenth());
+		//未完待续...
+
+	}
+	boost::asio::async_write(m_hSocket, boost::asio::buffer(buf, pBuffer->GetBufferSize()), boost::bind(&CNetSession::HandWritedata, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
+	
+	return true;
+}
+
+bool CNetSession::SendBuffer(IDataBuffer* pBuff)
+{
+	return lockfree_queue.push(pBuff);
+}
+
+
+//////////////////////////////////////////////////////////////////////////
 
 CNetSessionMrg::CNetSessionMrg()
 {
@@ -120,12 +160,33 @@ CNetSession* CNetSessionMrg::CreateNetSession()
 	CNetSession* CNetSession_ = nullptr;
 	if (m_NetSessionVector.size() <= 0)
 	{
-		return CNetSession_;
+		return nullptr;
 	}
-	CNetSession_ = m_NetSessionVector.front();
-	m_NetSessionVector.pop_front();
-
+	//CNetSession_ = m_NetSessionVector.front();
+	//m_NetSessionVector.pop_front();
+	CNetSession_ = m_NetSessionVector.back();
+	m_OnlineNetSessionVector[CNetSession_->GetSessionID()] = CNetSession_;
+	m_NetSessionVector.pop_back();
 	m_GetSessionMutex.unlock();
 
 	return CNetSession_;
+}
+
+CNetSession* CNetSessionMrg::GetNetSessionByID(UINT32 dwConnID)
+{
+	if (0 == dwConnID)return nullptr;
+	CNetSession* NetSession = nullptr;
+	auto Iter = m_OnlineNetSessionVector.find(dwConnID);
+	if (Iter != m_OnlineNetSessionVector.end())
+	{
+		NetSession = Iter->second;
+	}
+	//CNetSession* NetSession = nullptr;
+	//UINT32 dwIndex = dwConnID % m_OnlineNetSessionVector.size();
+	//NetSession = m_OnlineNetSessionVector[dwIndex == 0 ? (m_OnlineNetSessionVector.size() - 1) : (dwIndex - 1)];
+	if (NetSession->GetSessionID() != dwConnID)
+	{
+		NetSession = nullptr;
+	}
+	return NetSession;
 }

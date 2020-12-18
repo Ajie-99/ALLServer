@@ -25,7 +25,7 @@ bool CGameService::Init()
 {
 	bool bRet = false;
 
-	ServerConfigInfo &sClf = CServerConfig::GetInstancePtr()->GetServerInfoByServerName("GatWay");
+	ServerConfigInfo sClf = CServerConfig::GetInstancePtr()->GetServerInfoByServerName("GatWay");
 	bRet = CServiceBase::GetInstancePtr()->Start(sClf.Ip, sClf.Prot, sClf.MaxConct, this);
 	return bRet;
 }

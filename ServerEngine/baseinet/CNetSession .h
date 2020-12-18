@@ -15,7 +15,11 @@ public:
 	IDataHandler*	GetDataHandler();
 	bool			HandleRecvEvent(UINT32 dwBytes);
 	void			HandReaddata(const boost::system::error_code& error, UINT32 len);
+	void			HandWritedata(const boost::system::error_code& error, size_t len);
 	bool			DoReceive();
+	bool			DoSend();
+	bool            SendBuffer(IDataBuffer* pBuff);
+
 public:
 	boost::asio::ip::tcp::socket	m_hSocket;
 private:
@@ -25,6 +29,8 @@ private:
 	CHAR							*m_pbufPos;
 	UINT32							m_dwDataLen;
 	IDataHandler					*m_pDataHandler;
+	//boost::lockfree::queue<IDataBuffer*> queue;
+	boost::lockfree::queue<IDataBuffer*, boost::lockfree::capacity<40000> > lockfree_queue;
 };
 
 
@@ -33,10 +39,12 @@ class CNetSessionMrg
 public:
 	CNetSessionMrg();
 	~CNetSessionMrg();
-	static CNetSessionMrg* GetInstancePtr();
-	bool				InitConnectionList(UINT32 nMaxCons, boost::asio::io_service& ioservice);
-	CNetSession* CreateNetSession();
+	static CNetSessionMrg*	GetInstancePtr();
+	bool					InitConnectionList(UINT32 nMaxCons, boost::asio::io_service& ioservice);
+	CNetSession*			CreateNetSession();
+	CNetSession*			GetNetSessionByID(UINT32 dwConnID);
 private:
 	std::mutex			m_GetSessionMutex;
-	std::list<CNetSession*>m_NetSessionVector;
+	std::vector<CNetSession*>m_NetSessionVector;
+	std::map<UINT32,CNetSession*>m_OnlineNetSessionVector;
 };

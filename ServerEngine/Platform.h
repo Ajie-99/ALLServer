@@ -24,7 +24,8 @@
 #include <boost/property_tree/ini_parser.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/asio/impl/connect.hpp>
-
+#include <boost/lockfree/queue.hpp>
+#include <boost/asio.hpp>
 
 #include "../Common/DataBuffer.h"
 #include "../Common/CommonConvert.h"

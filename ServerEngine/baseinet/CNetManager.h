@@ -14,6 +14,11 @@ private:
 	void			HandleAccept(CNetSession* NetSession_, const boost::system::error_code& e);
 
 	void			HandleConnect(CNetSession* pNetSession, const boost::system::error_code& e);
+
+
+
+public:
+	bool			SendMessageData(UINT32 dwConnID, UINT32 dwMsgID, UINT64 u64TargetID, UINT32 dwUserData, const char* pData, UINT32 dwLen);
 private:
 	IDataHandler*										m_pBufferHandler;
 	boost::asio::io_service								m_IoService;

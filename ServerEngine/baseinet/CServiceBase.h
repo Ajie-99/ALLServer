@@ -15,6 +15,8 @@ public:
 public:
 	CNetSession*			ConnectTo(std::string strIpAddr, UINT16 sPort);
 
+
+	bool SendMsgProtoBuf(UINT32 dwConnID, UINT32 dwMsgID, UINT64 u64TargetID, UINT32 dwUserData, std::string& pdata/*const google::protobuf::Message& pdata*/);
 private:
 	std::deque<NetPacket>*		m_pRecvDataQueue;
 	std::deque<NetPacket>*		m_pDispathQueue;

@@ -53,7 +53,7 @@ bool CServerConfig::Init()
 }
 
 
-ServerConfigInfo &CServerConfig::GetServerInfoByServerId(UINT32 nId)const
+ServerConfigInfo CServerConfig::GetServerInfoByServerId(UINT32 nId)const
 {
 	ServerConfigInfo ConfigInfo{};
 	auto Iter = m_ServerConfigInfo.find(nId);
@@ -65,7 +65,7 @@ ServerConfigInfo &CServerConfig::GetServerInfoByServerId(UINT32 nId)const
 }
 
 
-ServerConfigInfo &CServerConfig::GetServerInfoByServerName(std::string ServrName)const
+ServerConfigInfo CServerConfig::GetServerInfoByServerName(std::string ServrName)const
 {
 	ServerConfigInfo ConfigInfo{};
 	auto Iter = m_strServerConfigInfo.find(ServrName);

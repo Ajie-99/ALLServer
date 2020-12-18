@@ -61,7 +61,7 @@ struct PacketHeader
 {
 	UINT32	 CheckCode;		//检验代码(自定义的，这个要和客户端商量来)
 	UINT32   dwMsgID;		//消息Id
-	UINT32   dwSize;		//数据长度
+	UINT32   dwSize;		//包的总长度(包头+包体)
 	UINT32   dwPacketNo;	//生成序号 = wCommandID^dwSize+index(每个包自动增长索引); 还原序号 = pHeader->dwPacketNo - pHeader->wCommandID^pHeader->dwSize;
 	UINT64   u64TargetID;	//目标Id
 	UINT32   dwUserData;	//客户端在副本中的情况下，dwUserData是copyguid， 在逻辑服的情况下， 部分协议充当客户端连接ID

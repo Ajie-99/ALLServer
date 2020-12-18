@@ -81,3 +81,31 @@ CNetSession* CNetManager::ConnectTo_Async(std::string strIpAddr, UINT16 sPort)
 
 	return pNetSession;
 }
+
+
+bool CNetManager::SendMessageData(UINT32 dwConnID, UINT32 dwMsgID, UINT64 u64TargetID, UINT32 dwUserData, const char* pData, UINT32 dwLen)
+{
+	CNetSession* pConn = CNetSessionMrg::GetInstancePtr()->GetNetSessionByID(dwConnID);
+	if (nullptr == pConn)
+	{
+		return false;
+	}
+	//拼接数据包
+	IDataBuffer* pDataBuffer = CBufferAllocator::GetInstancePtr()->AllocDataBuff(dwLen + sizeof(PacketHeader));
+	PacketHeader* pHeader = (PacketHeader*)pDataBuffer->GetBuffer();
+	pHeader->CheckCode = 0x99;//检查代码
+	pHeader->dwUserData = dwUserData;
+	pHeader->u64TargetID = u64TargetID;
+	pHeader->dwSize = dwLen + sizeof(PacketHeader);
+	pHeader->dwMsgID = dwMsgID;
+	pHeader->dwPacketNo = 1;
+	memcpy(pDataBuffer->GetBuffer() + sizeof(PacketHeader), pData, dwLen);
+	pDataBuffer->SetTotalLenth(pHeader->dwSize);
+	if (pConn->SendBuffer(pDataBuffer))
+	{
+		m_IoService.post(boost::bind(&CNetSession::DoSend, pConn));
+	//	PostSendOperation(pConn);
+	//	return TRUE;
+	}
+	return true;
+}

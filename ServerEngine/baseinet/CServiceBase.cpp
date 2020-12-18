@@ -75,6 +75,14 @@ CNetSession* CServiceBase::ConnectTo(std::string strIpAddr, UINT16 sPort)
 	return CNetManager::GetInstancePtr()->ConnectTo_Async(strIpAddr, sPort);
 }
 
+
+bool CServiceBase::SendMsgProtoBuf(UINT32 dwConnID, UINT32 dwMsgID, UINT64 u64TargetID, UINT32 dwUserData, std::string& pdata/*const google::protobuf::Message& pdata*/)
+{
+	//ÔÝÊ±ÕâÑùÐ´
+	CNetManager::GetInstancePtr()->SendMessageData(dwConnID, dwMsgID, u64TargetID, dwUserData, pdata.c_str(), pdata.length());
+
+	return true;
+}
 //////////////////////////////////////////////////////////////////////////
 
 bool CServiceBase::OnCloseConnect(UINT32 nConnID)
