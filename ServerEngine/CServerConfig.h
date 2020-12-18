@@ -10,8 +10,8 @@ public:
 	void SetConfigPath(std::string filePath);
 	bool Init();
 
-	ServerConfigInfo GetServerInfoByServerId(UINT32 nId)const;
-	ServerConfigInfo	GetServerInfoByServerName(std::string ServrName)const;
+	ServerConfigInfo &GetServerInfoByServerId(UINT32 nId)const;
+	ServerConfigInfo	&GetServerInfoByServerName(std::string ServrName)const;
 private:
 	~CServerConfig() {}
 private:

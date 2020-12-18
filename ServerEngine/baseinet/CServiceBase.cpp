@@ -54,6 +54,7 @@ bool		CServiceBase::Update()
 			{
 			case NEW_CONNECTION:
 				std::cout << "---新消息来了---" << Item.m_dwConnID<< std::endl;
+				m_pIPacketDispatcher->OnNewConnect(Item.m_dwConnID);
 				break;
 			case CLOSE_CONNECTION:
 				std::cout << "---新消息关闭---" << std::endl;

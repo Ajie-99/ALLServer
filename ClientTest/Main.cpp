@@ -23,10 +23,10 @@ public:
 
 	void Init()
 	{
-		ServerConfigInfo sSvr = CServerConfig::GetInstancePtr()->GetServerInfoByServerName("ServerTest");
+		ServerConfigInfo &sSvr = CServerConfig::GetInstancePtr()->GetServerInfoByServerName("ServerTest");
 		CServiceBase::GetInstancePtr()->Start(sSvr.Ip, sSvr.Prot, sSvr.MaxConct, this);
 
-		ServerConfigInfo sCli = CServerConfig::GetInstancePtr()->GetServerInfoByServerName("ClientTest");
+		ServerConfigInfo &sCli = CServerConfig::GetInstancePtr()->GetServerInfoByServerName("ClientTest");
 		CServiceBase::GetInstancePtr()->ConnectTo(sCli.Ip, sCli.Prot);
 	}
 };
