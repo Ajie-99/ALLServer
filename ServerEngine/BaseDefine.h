@@ -2,6 +2,19 @@
 #include "PCH.h"
 #pragma pack(1)
 
+
+
+
+static const char* wb_accept = "HTTP/1.1 101 Switching Protocols\r\n" \
+"Upgrade:websocket\r\n" \
+"Connection: Upgrade\r\n" \
+"Sec-WebSocket-Accept: %s\r\n" \
+"WebSocket-Location: ws://%s:%d/chat\r\n" \
+"WebSocket-Protocol:chat\r\n\r\n";
+
+
+
+
 #define RECV_BUF_SIZE               8192
 
 
@@ -77,7 +90,18 @@ struct ServerConfigInfo
 	std::string	ServerName;
 	std::string	Ip;
 };
-
-
+/*
+* -- 包格式
+-- 两字节包长
+-- 两字节协议号
+-- 两字符字符串长度
+-- 字符串内容
+*/
+struct PackTest
+{
+	INT16 PackSize;
+	INT16 MsgId;
+	INT16 MsgStringSize;
+};
 
 #pragma pack()

@@ -16,6 +16,12 @@
     <Filter Include="baseinet">
       <UniqueIdentifier>{4c54101b-8b64-432b-a268-bd8e71fdd7ed}</UniqueIdentifier>
     </Filter>
+    <Filter Include="http_parser">
+      <UniqueIdentifier>{0facaacb-fce5-4bd3-931e-ce6e82ea22c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="crypt">
+      <UniqueIdentifier>{19fe180b-c5b0-4057-9fd0-006eecf02b1d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -32,6 +38,15 @@
     </ClCompile>
     <ClCompile Include="CServerConfig.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="http_parser\http_parser.c">
+      <Filter>http_parser</Filter>
+    </ClCompile>
+    <ClCompile Include="crypt\base64_encoder.c">
+      <Filter>crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="crypt\sha1.c">
+      <Filter>crypt</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -55,6 +70,18 @@
     </ClInclude>
     <ClInclude Include="CServerConfig.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="http_parser\http_parser.h">
+      <Filter>http_parser</Filter>
+    </ClInclude>
+    <ClInclude Include="crypt\base64_encoder.h">
+      <Filter>crypt</Filter>
+    </ClInclude>
+    <ClInclude Include="crypt\sha1.h">
+      <Filter>crypt</Filter>
+    </ClInclude>
+    <ClInclude Include="baseinet\CHttpParser.hpp">
+      <Filter>baseinet</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

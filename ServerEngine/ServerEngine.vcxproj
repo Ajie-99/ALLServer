@@ -118,7 +118,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;WINDOWS_IGNORE_PACKING_MISMATCH;BOOST_BIND_GLOBAL_PLACEHOLDERS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;WINDOWS_IGNORE_PACKING_MISMATCH;BOOST_BIND_GLOBAL_PLACEHOLDERS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>../3rdParty/boost1_75_0/include;../3rdParty/protobuf3.0/Include;../3rdParty/rapidjson/include;../Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -154,15 +154,22 @@
     <ClCompile Include="baseinet\CNetManager.cpp" />
     <ClCompile Include="baseinet\CNetSession .cpp" />
     <ClCompile Include="baseinet\CServiceBase.cpp" />
+    <ClCompile Include="crypt\base64_encoder.c" />
+    <ClCompile Include="crypt\sha1.c" />
     <ClCompile Include="CServerConfig.cpp" />
+    <ClCompile Include="http_parser\http_parser.c" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseDefine.h" />
+    <ClInclude Include="baseinet\CHttpParser.hpp" />
     <ClInclude Include="baseinet\CNetManager.h" />
     <ClInclude Include="baseinet\CNetSession .h" />
     <ClInclude Include="baseinet\CServiceBase.h" />
+    <ClInclude Include="crypt\base64_encoder.h" />
+    <ClInclude Include="crypt\sha1.h" />
     <ClInclude Include="CServerConfig.h" />
+    <ClInclude Include="http_parser\http_parser.h" />
     <ClInclude Include="PCH.h" />
     <ClInclude Include="Platform.h" />
   </ItemGroup>
