@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="baseinet\CHttpParser.cpp" />
     <ClCompile Include="baseinet\CNetManager.cpp" />
     <ClCompile Include="baseinet\CNetSession .cpp" />
     <ClCompile Include="baseinet\CServiceBase.cpp" />
@@ -162,7 +163,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseDefine.h" />
-    <ClInclude Include="baseinet\CHttpParser.hpp" />
+    <ClInclude Include="baseinet\CHttpParser.h" />
     <ClInclude Include="baseinet\CNetManager.h" />
     <ClInclude Include="baseinet\CNetSession .h" />
     <ClInclude Include="baseinet\CServiceBase.h" />

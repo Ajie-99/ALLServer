@@ -48,6 +48,9 @@
     <ClCompile Include="crypt\sha1.c">
       <Filter>crypt</Filter>
     </ClCompile>
+    <ClCompile Include="baseinet\CHttpParser.cpp">
+      <Filter>baseinet</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.h">
@@ -80,7 +83,7 @@
     <ClInclude Include="crypt\sha1.h">
       <Filter>crypt</Filter>
     </ClInclude>
-    <ClInclude Include="baseinet\CHttpParser.hpp">
+    <ClInclude Include="baseinet\CHttpParser.h">
       <Filter>baseinet</Filter>
     </ClInclude>
   </ItemGroup>
