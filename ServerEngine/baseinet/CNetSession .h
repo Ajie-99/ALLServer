@@ -1,7 +1,7 @@
 #pragma once
 #include "../BaseDefine.h"
 #include "../Platform.h"
-
+#include "CHttpParser.h"
 
 class CNetSession
 {
@@ -19,7 +19,9 @@ public:
 	bool			DoReceive();
 	bool			DoSend();
 	bool            SendBuffer(IDataBuffer* pBuff);
-
+public:
+	bool			CheckHttpPackkage();
+	INT32			RetHttpHandlerPackkage();
 public:
 	boost::asio::ip::tcp::socket	m_hSocket;
 private:
@@ -29,8 +31,14 @@ private:
 	CHAR							*m_pbufPos;
 	UINT32							m_dwDataLen;
 	IDataHandler					*m_pDataHandler;
+	bool							m_IsHandler;
 	//boost::lockfree::queue<IDataBuffer*> queue;
 	boost::lockfree::queue<IDataBuffer*, boost::lockfree::capacity<40000> > lockfree_queue;
+
+	http_parser						m_http_parser;
+	http_parser_settings			m_http_parser_settings;
+	char							key_migic[256];
+	char							accept_buffer[256];
 };
 
 

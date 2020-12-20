@@ -12,7 +12,7 @@ static const char* wb_accept = "HTTP/1.1 101 Switching Protocols\r\n" \
 "WebSocket-Location: ws://%s:%d/chat\r\n" \
 "WebSocket-Protocol:chat\r\n\r\n";
 
-
+static const char* migic = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 
 
 #define RECV_BUF_SIZE               8192
