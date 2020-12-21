@@ -76,7 +76,7 @@ bool	CNetSession::CheckHttpPackkage()
 	return 	CHttpParser::has_client_key == 0? false : true;
 }
 // 回一个http的数据给我们的client,建立websocket链接
-INT32		CNetSession::RetHttpHandlerPackkage()
+bool		CNetSession::RetHttpHandlerPackkage()
 {
 	memset(key_migic, 0, sizeof(key_migic));
 	sprintf(key_migic, "%s%s", CHttpParser::client_ws_key, migic);
@@ -111,38 +111,79 @@ bool	CNetSession::HandleRecvEvent(UINT32 dwBytes)
 	//1.提取数据
 	for (;;)
 	{
-		
 		if (!m_IsHandler)
 		{
 			if (!CheckHttpPackkage())
 			{
 				//说明握手没有成功
-				//1.断开连接
-				//2.关闭socket
-				std::cout << "---来至" << m_dwSessionID << "的数据---" << std::endl;
+				//关闭socket
+				Close();
 				return true;
 			}
-			m_IsHandler = true;
 			RetHttpHandlerPackkage();
+			m_IsHandler = true;
 		}
 		else
 		{
+			if (m_dwDataLen >= MAX_PKG_SIZE)
+			{
+				Close();
+				break;
+			}
+			if (m_pCurRecvBuffer != nullptr)
+			{
+				//进到这里面表示数据还没接收完，要继续
+			}
 			//接受真正的数据
-			m_IsHandler = false;
-		}
-		
-		std::cout <<"---来至"<<m_dwSessionID<< "的数据---" << std::endl;
-		if (m_pCurRecvBuffer != nullptr)
-		{
-			//进到这里面表示数据还没接收完，要继续
-		}
+			if (dwBytes < 2)
+			{
+				//包头没有接受完
+				break;
+			}
+			/*
+			* parser_ws_pack(struct session* s,
+                      unsigned char* body, int body_len,
+					  unsigned char* mask, int protocal_type)
+			*/
+			int pkg_size = 0;// == 19
+			int header_size = 0;// = 6
+			std::string s = std::string(m_pbufPos);
+			CHttpParser::recv_ws_header((unsigned char*)m_pbufPos + (m_dwDataLen - dwBytes), dwBytes, &pkg_size, &header_size);
+			if (pkg_size >= MAX_PKG_SIZE) 
+			{ 
+				// ,异常的数据包，直接关闭掉socket;
+				 // 释放这个socket使用的完成端口的io_data;
+				Close();
+				break;
+			}
+			// 是否收完了一个数据包;
+			if (m_dwDataLen >= pkg_size)
+			{ // 表示我们已经收到至少超过了一个包的数据；
+				//unsigned char* pkg_data = (m_pbufPos != NULL) ? m_pbufPos : io_data->pkg;
 
+				// 0x81
+				if (m_pbufPos[0] == 0x88)
+				{ // 对方要关闭socket
+					Close();
+					break;
+				}
+				unsigned char* bbuf = (unsigned char*)m_pbufPos + header_size;
+				int nLeng = pkg_size - header_size;//13
+				unsigned char* length = (unsigned char*)m_pbufPos + header_size - 4;
+				//length = 0x010745d2 "体韚非軼鲎罻譊眔st: 127.0.0.1:28880\r\nConnection: Upgrade\r\nPragma: no-cache\r\nCache-Control: no-cache\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chro
+				CHttpParser::parser_ws_pack(bbuf, nLeng, length);
+				CHttpParser::on_json_protocal_recv_entry((unsigned char*)m_pbufPos, pkg_size - header_size);
+				std::cout << "接受真正的数据" << m_pbufPos << std::endl;
+			}
+			
+			//std::cout << "接受真正的数据" << m_pRecvBuf << std::endl;
+		}
 		break;
 	}
 	//2.验证数据
 		//2.1验证成功分发消息
 		//2.2验证失败不做处理,或者断开socket
-	//3.继续接收没有接收完的
+	//3.继续接收
 	return DoReceive();
 }
 
@@ -166,7 +207,7 @@ bool CNetSession::DoSend()
 		pSendedBuf = CBufferAllocator::GetInstancePtr()->AllocDataBuff(RECV_BUF_SIZE);
 		pBuffer->CopyTo(buf, pBuffer->GetTotalLenth());
 		//未完待续...
-
+		std::cout <<"返回Http :"<< std::endl <<buf << std::endl;
 			//这里发送要做个缓存，上pBuffer要pBuffer->Release();
 		boost::asio::async_write(m_hSocket, boost::asio::buffer(buf, pBuffer->GetBufferSize()), boost::bind(&CNetSession::HandWritedata, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
 	}
@@ -180,7 +221,17 @@ bool CNetSession::SendBuffer(IDataBuffer* pBuff)
 	return lockfree_queue.push(pBuff);
 }
 
-
+void		CNetSession::Close()
+{
+	m_hSocket.shutdown(boost::asio::socket_base::shutdown_receive);
+	m_hSocket.shutdown(boost::asio::socket_base::shutdown_send);
+	m_hSocket.close();
+	if (m_pDataHandler)
+	{
+		m_pDataHandler->OnCloseConnect(GetSessionID());
+	}
+	m_IsHandler = false;
+}
 //////////////////////////////////////////////////////////////////////////
 
 CNetSessionMrg::CNetSessionMrg()

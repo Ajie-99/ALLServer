@@ -91,7 +91,7 @@ int main()
 	CommonFunc::SetWorkDir();
 
 	boost::asio::io_service io_service;
-	tcp::endpoint endpoint(address::from_string("127.0.0.1"), 27770);
+	tcp::endpoint endpoint(address::from_string("127.0.0.1"), 28880);
 	client_ptr new_session(new client(io_service, endpoint));
 	new_session->start();
 	io_service.run();

@@ -22,6 +22,9 @@
     <Filter Include="crypt">
       <UniqueIdentifier>{19fe180b-c5b0-4057-9fd0-006eecf02b1d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="mjson">
+      <UniqueIdentifier>{2e6cc20d-05db-4174-ae97-475fe7680463}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -50,6 +53,12 @@
     </ClCompile>
     <ClCompile Include="baseinet\CHttpParser.cpp">
       <Filter>baseinet</Filter>
+    </ClCompile>
+    <ClCompile Include="mjson\json.c">
+      <Filter>mjson</Filter>
+    </ClCompile>
+    <ClCompile Include="mjson\json_extends.c">
+      <Filter>mjson</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -85,6 +94,12 @@
     </ClInclude>
     <ClInclude Include="baseinet\CHttpParser.h">
       <Filter>baseinet</Filter>
+    </ClInclude>
+    <ClInclude Include="mjson\json.h">
+      <Filter>mjson</Filter>
+    </ClInclude>
+    <ClInclude Include="mjson\json_extends.h">
+      <Filter>mjson</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

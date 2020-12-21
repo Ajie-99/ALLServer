@@ -18,10 +18,11 @@ public:
 	void			HandWritedata(const boost::system::error_code& error, size_t len);
 	bool			DoReceive();
 	bool			DoSend();
+	void			Close();
 	bool            SendBuffer(IDataBuffer* pBuff);
 public:
 	bool			CheckHttpPackkage();
-	INT32			RetHttpHandlerPackkage();
+	bool			RetHttpHandlerPackkage();
 public:
 	boost::asio::ip::tcp::socket	m_hSocket;
 private:
