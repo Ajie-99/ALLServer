@@ -47,7 +47,6 @@ bool CServerConfig::Init()
 				m_strServerConfigInfo[ServerName]	= ConfigInfo;
 			}
 		}
-
 	}
 	return true;
 }

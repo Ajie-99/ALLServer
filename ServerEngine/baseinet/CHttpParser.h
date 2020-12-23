@@ -48,9 +48,9 @@ public:
 		enum json_error error;
 		struct json_parsing_info* jpi;
 
-		//assert(root != NULL);
-		//assert(*root == NULL);
-		//assert(text != NULL);
+		assert(root != NULL);
+		assert(*root == NULL);
+		assert(text != NULL);
 
 		/* initialize the parsing structure */
 		jpi = (struct json_parsing_info*)malloc(sizeof(struct json_parsing_info));

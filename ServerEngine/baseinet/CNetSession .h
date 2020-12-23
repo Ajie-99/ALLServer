@@ -28,8 +28,8 @@ public:
 private:
 	UINT32							m_dwSessionID;
 	void							*m_pCurRecvBuffer;
-	CHAR							m_pRecvBuf[RECV_BUF_SIZE];
-	CHAR							*m_pbufPos;
+	char							m_pRecvBuf[RECV_BUF_SIZE];
+	char					*m_pbufPos;
 	UINT32							m_dwDataLen;
 	IDataHandler					*m_pDataHandler;
 	bool							m_IsHandler;

@@ -159,7 +159,6 @@
     <ClCompile Include="crypt\sha1.c" />
     <ClCompile Include="CServerConfig.cpp" />
     <ClCompile Include="http_parser\http_parser.c" />
-    <ClCompile Include="Main.cpp" />
     <ClCompile Include="mjson\json.c" />
     <ClCompile Include="mjson\json_extends.c" />
   </ItemGroup>

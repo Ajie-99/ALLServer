@@ -125,58 +125,15 @@ bool	CNetSession::HandleRecvEvent(UINT32 dwBytes)
 		}
 		else
 		{
-			if (m_dwDataLen >= MAX_PKG_SIZE)
-			{
-				Close();
-				break;
-			}
-			if (m_pCurRecvBuffer != nullptr)
-			{
-				//进到这里面表示数据还没接收完，要继续
-			}
-			//接受真正的数据
-			if (dwBytes < 2)
-			{
-				//包头没有接受完
-				break;
-			}
-			/*
-			* parser_ws_pack(struct session* s,
-                      unsigned char* body, int body_len,
-					  unsigned char* mask, int protocal_type)
-			*/
-			int pkg_size = 0;// == 19
-			int header_size = 0;// = 6
-			std::string s = std::string(m_pbufPos);
-			CHttpParser::recv_ws_header((unsigned char*)m_pbufPos + (m_dwDataLen - dwBytes), dwBytes, &pkg_size, &header_size);
-			if (pkg_size >= MAX_PKG_SIZE) 
-			{ 
-				// ,异常的数据包，直接关闭掉socket;
-				 // 释放这个socket使用的完成端口的io_data;
-				Close();
-				break;
-			}
-			// 是否收完了一个数据包;
-			if (m_dwDataLen >= pkg_size)
-			{ // 表示我们已经收到至少超过了一个包的数据；
-				//unsigned char* pkg_data = (m_pbufPos != NULL) ? m_pbufPos : io_data->pkg;
-
-				// 0x81
-				if (m_pbufPos[0] == 0x88)
-				{ // 对方要关闭socket
-					Close();
-					break;
-				}
-				unsigned char* bbuf = (unsigned char*)m_pbufPos + header_size;
-				int nLeng = pkg_size - header_size;//13
-				unsigned char* length = (unsigned char*)m_pbufPos + header_size - 4;
-				//length = 0x010745d2 "体韚非軼鲎罻譊眔st: 127.0.0.1:28880\r\nConnection: Upgrade\r\nPragma: no-cache\r\nCache-Control: no-cache\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chro
-				CHttpParser::parser_ws_pack(bbuf, nLeng, length);
-				CHttpParser::on_json_protocal_recv_entry((unsigned char*)m_pbufPos, pkg_size - header_size);
-				std::cout << "接受真正的数据" << m_pbufPos << std::endl;
-			}
-			
-			//std::cout << "接受真正的数据" << m_pRecvBuf << std::endl;
+			//int pkg_size = 0;
+			//int header_size = 0;
+			//int ret = CHttpParser::recv_ws_header((unsigned char*)m_pbufPos, dwBytes, &pkg_size, &header_size);
+			//if (ret != -1)
+			//{
+			//	int a = 0;
+			//	a++;
+			//}
+			std::cout << "接受真正的数据" << m_pbufPos << std::endl;
 		}
 		break;
 	}
@@ -207,7 +164,7 @@ bool CNetSession::DoSend()
 		pSendedBuf = CBufferAllocator::GetInstancePtr()->AllocDataBuff(RECV_BUF_SIZE);
 		pBuffer->CopyTo(buf, pBuffer->GetTotalLenth());
 		//未完待续...
-		std::cout <<"返回Http :"<< std::endl <<buf << std::endl;
+		//std::cout <<"返回Http :"<< std::endl <<buf << std::endl;
 			//这里发送要做个缓存，上pBuffer要pBuffer->Release();
 		boost::asio::async_write(m_hSocket, boost::asio::buffer(buf, pBuffer->GetBufferSize()), boost::bind(&CNetSession::HandWritedata, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
 	}
