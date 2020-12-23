@@ -125,15 +125,23 @@ bool	CNetSession::HandleRecvEvent(UINT32 dwBytes)
 		}
 		else
 		{
-			//int pkg_size = 0;
-			//int header_size = 0;
-			//int ret = CHttpParser::recv_ws_header((unsigned char*)m_pbufPos, dwBytes, &pkg_size, &header_size);
-			//if (ret != -1)
-			//{
-			//	int a = 0;
-			//	a++;
-			//}
-			std::cout << "接受真正的数据" << m_pbufPos << std::endl;
+
+			int pkg_size = 0;
+			int header_size = 0;
+			CHttpParser::recv_ws_header((unsigned char *)m_pbufPos + m_dwDataLen - dwBytes, dwBytes, &pkg_size, &header_size);
+			if (dwBytes >= pkg_size)
+			{
+				if (m_pbufPos[0] == 0x88)
+				{
+					Close();
+					break;
+				}
+				unsigned char* bbuf = (unsigned char*)m_pbufPos + m_dwDataLen - dwBytes + header_size;
+				int nLen = pkg_size - header_size;
+				unsigned char* buf = (unsigned char*)m_pbufPos + m_dwDataLen - dwBytes + header_size - 4;
+				CHttpParser::parser_ws_pack(bbuf, nLen, buf);
+				std::cout << "接受真正的数据" << m_pbufPos + m_dwDataLen - dwBytes << std::endl;
+			}
 		}
 		break;
 	}
@@ -146,7 +154,6 @@ bool	CNetSession::HandleRecvEvent(UINT32 dwBytes)
 
 bool CNetSession::DoReceive()
 {
-
 	m_hSocket.async_read_some(boost::asio::buffer(m_pRecvBuf + m_dwDataLen, RECV_BUF_SIZE - m_dwDataLen), boost::bind(&CNetSession::HandReaddata, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
 	return true;
 }
@@ -164,7 +171,7 @@ bool CNetSession::DoSend()
 		pSendedBuf = CBufferAllocator::GetInstancePtr()->AllocDataBuff(RECV_BUF_SIZE);
 		pBuffer->CopyTo(buf, pBuffer->GetTotalLenth());
 		//未完待续...
-		//std::cout <<"返回Http :"<< std::endl <<buf << std::endl;
+		std::cout <<"返回Http :"<< std::endl <<buf << std::endl;
 			//这里发送要做个缓存，上pBuffer要pBuffer->Release();
 		boost::asio::async_write(m_hSocket, boost::asio::buffer(buf, pBuffer->GetBufferSize()), boost::bind(&CNetSession::HandWritedata, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
 	}

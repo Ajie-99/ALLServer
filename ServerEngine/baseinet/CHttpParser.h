@@ -127,7 +127,7 @@ public:
 		{
 			body[i] = body[i] ^ mask[i % 4]; // mask只有4个字节的长度，所以，要循环使用，如果超出，取余就可以了。
 		}
-		
+		on_json_protocal_recv_entry(body, body_len);
 	}
 
 	__inline static void on_json_protocal_recv_entry(unsigned char* data, int len)
