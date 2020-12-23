@@ -16,7 +16,7 @@ static const char* migic = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 
 
 #define RECV_BUF_SIZE               8192
-#define MAX_PKG_SIZE ((1<<16) - 1)
+#define MAX_PKG_SIZE				((1<<16) - 1)
 
 enum
 {

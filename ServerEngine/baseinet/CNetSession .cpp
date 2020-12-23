@@ -9,6 +9,7 @@ CNetSession::CNetSession(boost::asio::io_service& ioservice) :m_hSocket(ioservic
 	m_pbufPos = m_pRecvBuf;
 	m_dwDataLen = 0;
 	m_pCurRecvBuffer = nullptr;
+	m_pCurBufferSize = 0;
 	memset(&m_http_parser, 0, sizeof(m_http_parser));
 	memset(&m_http_parser_settings, 0, sizeof(m_http_parser_settings));
 	memset(key_migic, 0, sizeof(key_migic));
@@ -46,7 +47,7 @@ IDataHandler* CNetSession::GetDataHandler()
 }
 
 
-void	CNetSession::HandReaddata(const boost::system::error_code& error, UINT32 len)
+void	CNetSession::HandReaddata(const boost::system::error_code& error, size_t len)
 {
 	if (error)
 	{
@@ -101,6 +102,100 @@ bool		CNetSession::RetHttpHandlerPackkage()
 	return DoSend();
 }
 
+
+//处理http包
+bool	CNetSession::DelHttpPackage(size_t dwBytes)
+{
+	int pkg_size = 0;//29961
+	int header_size = 0;
+	/*
+	* 注意这里：在另外一套框架下这里的数据包是放在web协议前面的
+	*/
+	//1.解析包头
+	unsigned char* buf = (unsigned char*)m_pbufPos + m_dwDataLen - dwBytes;
+	CHttpParser::recv_ws_header(buf, dwBytes, &pkg_size, &header_size);
+	if (pkg_size >= MAX_PKG_SIZE)
+	{
+		//超出了我们规定的最大包长
+		Close();
+		return false;
+	}
+	//2.是否收完了一个数据包;dwBytes == 381
+	if (dwBytes >=pkg_size)//接收到包长比实际发送的包长小
+	{
+		//2.1表示收到至少一个包
+		std::cout << "表示收到至少一个包" << std::endl;
+	}
+	else
+	{
+		for (;;)
+		{
+			if (m_pCurRecvBuffer)
+			{
+				if ((m_pCurRecvBuffer->GetTotalLenth() + m_dwDataLen) < m_pCurBufferSize)
+				{
+					memcpy(m_pCurRecvBuffer->GetBuffer() + m_pCurRecvBuffer->GetTotalLenth(), m_pbufPos, m_dwDataLen);
+					m_pbufPos = m_pRecvBuf;
+					m_pCurRecvBuffer->SetTotalLenth(m_pCurRecvBuffer->GetTotalLenth() + m_dwDataLen);
+					m_dwDataLen = 0;
+					break;
+				}
+				else
+				{
+					int nLen = m_pCurRecvBuffer->GetTotalLenth();
+					char *buf = m_pCurRecvBuffer->GetBuffer() + nLen;
+					std::string s = buf;
+					int nSize = m_pCurBufferSize - nLen;
+					memcpy(buf, m_pbufPos, nSize);
+					m_dwDataLen -= m_pCurBufferSize - m_pCurRecvBuffer->GetTotalLenth();
+					m_pbufPos += m_pCurBufferSize - m_pCurRecvBuffer->GetTotalLenth();
+					m_pCurRecvBuffer->SetTotalLenth(m_pCurBufferSize);
+					//m_pDataHandler->OnDataHandle(m_pCurRecvBuffer, GetSessionID());
+					m_pCurRecvBuffer = NULL;
+				}
+			}
+
+			if (m_dwDataLen >= pkg_size)
+			{
+
+			}
+			else
+			{
+				// 2.2没有收完一个数据包，所以我们直接投递recv请求;
+				std::cout << "没有收完一个数据包，所以我们直接投递recv请求;" << std::endl;
+				IDataBuffer* pDataBuffer = CBufferAllocator::GetInstancePtr()->AllocDataBuff(pkg_size);
+				memcpy(pDataBuffer->GetBuffer(), m_pbufPos, m_dwDataLen);
+				pDataBuffer->SetTotalLenth(m_dwDataLen);
+				m_dwDataLen = 0;
+				m_pCurRecvBuffer = pDataBuffer;
+				
+				m_pbufPos = m_pRecvBuf;
+				m_pCurBufferSize = pkg_size;
+			}
+		}
+
+	}
+
+	//if (dwBytes >= pkg_size)
+	//{
+	//	unsigned char* bbuf = (unsigned char*)m_pbufPos + m_dwDataLen - dwBytes + header_size;
+	//	int nLen = pkg_size - header_size;
+	//	unsigned char* buf = (unsigned char*)m_pbufPos + m_dwDataLen - dwBytes + header_size - 4;
+	//	if (bbuf[0] == 0x88)
+	//	{
+	//		Close();
+	//		return false;
+	//	}
+
+	//	CHttpParser::parser_ws_pack(bbuf, nLen, buf);
+	//	//unsigned char* pkg_data = (io_data->long_pkg != NULL) ? io_data->long_pkg : io_data->pkg;
+	//	//CHttpParser::on_json_protocal_recv_entry(bbuf, nLen);
+	//	std::cout << "--------------------" << std::endl;
+	//	std::cout << bbuf << std::endl;//m_pbufPos + m_dwDataLen - dwBytes
+	//	std::cout << "--------------------" << std::endl;
+	//}
+	return true;
+}
 bool	CNetSession::HandleRecvEvent(UINT32 dwBytes)
 {
 	m_dwDataLen += dwBytes;
@@ -109,42 +204,23 @@ bool	CNetSession::HandleRecvEvent(UINT32 dwBytes)
 		return true;
 	}
 	//1.提取数据
-	for (;;)
+	if (!m_IsHandler)
 	{
-		if (!m_IsHandler)
+		if (!CheckHttpPackkage())
 		{
-			if (!CheckHttpPackkage())
-			{
-				//说明握手没有成功
-				//关闭socket
-				Close();
-				return true;
-			}
-			RetHttpHandlerPackkage();
-			m_IsHandler = true;
+			//说明握手没有成功
+			//关闭socket
+			Close();
+			return true;
 		}
-		else
-		{
-
-			int pkg_size = 0;
-			int header_size = 0;
-			CHttpParser::recv_ws_header((unsigned char *)m_pbufPos + m_dwDataLen - dwBytes, dwBytes, &pkg_size, &header_size);
-			if (dwBytes >= pkg_size)
-			{
-				if (m_pbufPos[0] == 0x88)
-				{
-					Close();
-					break;
-				}
-				unsigned char* bbuf = (unsigned char*)m_pbufPos + m_dwDataLen - dwBytes + header_size;
-				int nLen = pkg_size - header_size;
-				unsigned char* buf = (unsigned char*)m_pbufPos + m_dwDataLen - dwBytes + header_size - 4;
-				CHttpParser::parser_ws_pack(bbuf, nLen, buf);
-				std::cout << "接受真正的数据" << m_pbufPos + m_dwDataLen - dwBytes << std::endl;
-			}
-		}
-		break;
+		RetHttpHandlerPackkage();
+		m_IsHandler = true;
 	}
+	else
+	{
+		DelHttpPackage(dwBytes);
+	}
+
 	//2.验证数据
 		//2.1验证成功分发消息
 		//2.2验证失败不做处理,或者断开socket
@@ -154,7 +230,8 @@ bool	CNetSession::HandleRecvEvent(UINT32 dwBytes)
 
 bool CNetSession::DoReceive()
 {
-	m_hSocket.async_read_some(boost::asio::buffer(m_pRecvBuf + m_dwDataLen, RECV_BUF_SIZE - m_dwDataLen), boost::bind(&CNetSession::HandReaddata, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
+	int nlen = MAX_PKG_SIZE;
+	m_hSocket.async_read_some(boost::asio::buffer(m_pRecvBuf + m_dwDataLen, /*RECV_BUF_SIZE*/MAX_PKG_SIZE - m_dwDataLen), boost::bind(&CNetSession::HandReaddata, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
 	return true;
 }
 

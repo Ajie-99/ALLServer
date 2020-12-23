@@ -14,7 +14,7 @@ public:
 	void			SetDataHandler(IDataHandler* pDataHandler);
 	IDataHandler*	GetDataHandler();
 	bool			HandleRecvEvent(UINT32 dwBytes);
-	void			HandReaddata(const boost::system::error_code& error, UINT32 len);
+	void			HandReaddata(const boost::system::error_code& error, size_t len);
 	void			HandWritedata(const boost::system::error_code& error, size_t len);
 	bool			DoReceive();
 	bool			DoSend();
@@ -23,13 +23,15 @@ public:
 public:
 	bool			CheckHttpPackkage();
 	bool			RetHttpHandlerPackkage();
+	bool			DelHttpPackage(size_t dwBytes);
 public:
 	boost::asio::ip::tcp::socket	m_hSocket;
 private:
 	UINT32							m_dwSessionID;
-	void							*m_pCurRecvBuffer;
+	IDataBuffer						*m_pCurRecvBuffer;
+	UINT32							m_pCurBufferSize;
 	char							m_pRecvBuf[RECV_BUF_SIZE];
-	char					*m_pbufPos;
+	char							*m_pbufPos;
 	UINT32							m_dwDataLen;
 	IDataHandler					*m_pDataHandler;
 	bool							m_IsHandler;

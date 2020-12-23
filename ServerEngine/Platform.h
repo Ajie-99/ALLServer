@@ -26,6 +26,8 @@
 #include <boost/asio/impl/connect.hpp>
 #include <boost/lockfree/queue.hpp>
 #include <boost/asio.hpp>
+#include <boost/bind.hpp>
+#include <boost/asio/buffer.hpp>
 
 #include "../Common/DataBuffer.h"
 #include "../Common/CommonConvert.h"
