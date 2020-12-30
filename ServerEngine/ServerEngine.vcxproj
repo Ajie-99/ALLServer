@@ -155,6 +155,7 @@
     <ClCompile Include="baseinet\CNetManager.cpp" />
     <ClCompile Include="baseinet\CNetSession .cpp" />
     <ClCompile Include="baseinet\CServiceBase.cpp" />
+    <ClCompile Include="baseinet\HttpParameter.cpp" />
     <ClCompile Include="crypt\base64_encoder.c" />
     <ClCompile Include="crypt\sha1.c" />
     <ClCompile Include="CServerConfig.cpp" />
@@ -168,6 +169,7 @@
     <ClInclude Include="baseinet\CNetManager.h" />
     <ClInclude Include="baseinet\CNetSession .h" />
     <ClInclude Include="baseinet\CServiceBase.h" />
+    <ClInclude Include="baseinet\HttpParameter.h" />
     <ClInclude Include="crypt\base64_encoder.h" />
     <ClInclude Include="crypt\sha1.h" />
     <ClInclude Include="CServerConfig.h" />

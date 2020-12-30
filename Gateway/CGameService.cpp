@@ -54,3 +54,7 @@ bool CGameService::OnSecondTimer()
 	return true;
 }
 
+bool CGameService::DispatchPacket(NetPacket* pNetPacket)
+{
+	return true;
+}

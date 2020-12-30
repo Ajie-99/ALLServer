@@ -15,8 +15,8 @@ static const char* wb_accept = "HTTP/1.1 101 Switching Protocols\r\n" \
 static const char* migic = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 
 
-#define RECV_BUF_SIZE               8192
-#define MAX_PKG_SIZE				((1<<16) - 1)
+#define RECV_BUF_SIZE               8192//一次接受的包长
+#define MAX_PKG_SIZE				((1<<16) - 1)//自定义包从总长
 
 enum
 {
@@ -55,14 +55,14 @@ struct NetPacket
 
 struct IDataHandler
 {
-	//virtual bool OnDataHandle(IDataBuffer* pDataBuffer, UINT32 nConnID) = 0;
+	virtual bool OnDataHandle(IDataBuffer* pDataBuffer, UINT32 nConnID) = 0;
 	virtual bool OnCloseConnect(UINT32 nConnID) = 0;
 	virtual bool OnNewConnect(UINT32 nConnID) = 0;
 };
 
 struct IPacketDispatcher
 {
-	//virtual BOOL DispatchPacket(NetPacket* pNetPacket) = 0;
+	virtual bool DispatchPacket(NetPacket* pNetPacket) = 0;
 	virtual bool OnCloseConnect(UINT32 nConnID) = 0;
 	virtual bool OnNewConnect(UINT32 nConnID) = 0;
 	virtual bool OnSecondTimer() = 0;

@@ -2,6 +2,7 @@
 
 int main()
 {
+
 	if (CGameService::GetInstancePtr()->Init())
 	{
 		CGameService::GetInstancePtr()->Run();

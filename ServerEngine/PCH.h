@@ -23,3 +23,4 @@
 #include <fstream>
 #include <iterator>
 #include <assert.h>
+#include <algorithm>

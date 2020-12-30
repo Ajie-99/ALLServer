@@ -2,7 +2,7 @@
 #include "../BaseDefine.h"
 #include "../Platform.h"
 #include "CHttpParser.h"
-
+#include "HttpParameter.h"
 class CNetSession
 {
 public:
@@ -23,16 +23,17 @@ public:
 public:
 	bool			CheckHttpPackkage();
 	bool			RetHttpHandlerPackkage();
-	bool			DelHttpPackage(size_t dwBytes);
+	bool			ExtractBuffer();
+	bool			CheckHeader(char* m_pPacket);
 public:
 	boost::asio::ip::tcp::socket	m_hSocket;
 private:
-	UINT32							m_dwSessionID;
+	INT32							m_dwSessionID;
 	IDataBuffer						*m_pCurRecvBuffer;
 	UINT32							m_pCurBufferSize;
 	char							m_pRecvBuf[RECV_BUF_SIZE];
-	char							*m_pbufPos;
-	UINT32							m_dwDataLen;
+	char							* m_pBufPos;
+	UINT32							m_dwDataLen;//一次性接受到的总包长度
 	IDataHandler					*m_pDataHandler;
 	bool							m_IsHandler;
 	//boost::lockfree::queue<IDataBuffer*> queue;
@@ -42,6 +43,7 @@ private:
 	http_parser_settings			m_http_parser_settings;
 	char							key_migic[256];
 	char							accept_buffer[256];
+	std::string                     m_RecvBuf;
 };
 
 

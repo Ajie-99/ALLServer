@@ -14,6 +14,6 @@ public:
 	virtual bool OnCloseConnect(UINT32 nConnID);
 	virtual bool OnNewConnect(UINT32 nConnID);
 	virtual bool OnSecondTimer();
-
+	virtual bool DispatchPacket(NetPacket* pNetPacket);
 };
 

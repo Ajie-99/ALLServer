@@ -57,6 +57,9 @@
     <ClCompile Include="mjson\json_extends.c">
       <Filter>mjson</Filter>
     </ClCompile>
+    <ClCompile Include="baseinet\HttpParameter.cpp">
+      <Filter>baseinet</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.h">
@@ -97,6 +100,9 @@
     </ClInclude>
     <ClInclude Include="mjson\json_extends.h">
       <Filter>mjson</Filter>
+    </ClInclude>
+    <ClInclude Include="baseinet\HttpParameter.h">
+      <Filter>baseinet</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

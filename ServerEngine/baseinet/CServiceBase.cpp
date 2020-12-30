@@ -31,8 +31,6 @@ bool CServiceBase::Start(std::string& strListenIp, UINT32 nPort, UINT32 nMaxConn
 		return false;
 
 	m_pIPacketDispatcher = (IPacketDispatcher*)pIPacketDispatcher;
-
-
 	CNetManager::GetInstancePtr()->Start(strListenIp, nPort, nMaxConn, this);
 
 	return true;
@@ -87,14 +85,22 @@ bool CServiceBase::SendMsgProtoBuf(UINT32 dwConnID, UINT32 dwMsgID, UINT64 u64Ta
 
 bool CServiceBase::OnCloseConnect(UINT32 nConnID)
 {
+	m_QueueLock.lock();
+	m_pRecvDataQueue->push_back(NetPacket(nConnID, CLOSE_CONNECTION, nullptr));
+	m_QueueLock.unlock();
 	return true;
 }
 
 bool CServiceBase::OnNewConnect(UINT32 nConnID)
 {
-	std::cout << "有链接进来  :" << nConnID << "   " << std::endl;
-
+	m_QueueLock.lock();
 	m_pRecvDataQueue->push_back(NetPacket(nConnID, NEW_CONNECTION, nullptr));
-
+	m_QueueLock.unlock();
+	return true;
+}
+bool	CServiceBase::OnDataHandle(IDataBuffer* pDataBuffer, UINT32 nConnID)
+{
+	std::cout << "---------------------------------------------" << std::endl;
+	std::cout << pDataBuffer->GetBuffer() << std::endl;
 	return true;
 }
