@@ -13,7 +13,7 @@ public:
 
 	virtual bool			OnCloseConnect(UINT32 nConnID);
 	virtual bool			OnNewConnect(UINT32 nConnID);
-	virtual bool			OnDataHandle(IDataBuffer* pDataBuffer, UINT32 nConnID);
+	virtual bool			OnDataHandle(IDataBuffer* pDataBuffer, UINT32 header_size, UINT32 nConnID);
 public:
 	CNetSession*			ConnectTo(std::string strIpAddr, UINT16 sPort);
 

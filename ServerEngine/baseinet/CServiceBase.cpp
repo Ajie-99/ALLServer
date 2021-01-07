@@ -58,6 +58,8 @@ bool		CServiceBase::Update()
 				std::cout << "---新消息关闭---" << std::endl;
 				break;
 			default:
+				std::cout << "---派发消息---" << Item .m_pDataBuffer<< std::endl;
+				m_pIPacketDispatcher->DispatchPacket(&Item);
 				break;
 			}
 		}
@@ -98,9 +100,17 @@ bool CServiceBase::OnNewConnect(UINT32 nConnID)
 	m_QueueLock.unlock();
 	return true;
 }
-bool	CServiceBase::OnDataHandle(IDataBuffer* pDataBuffer, UINT32 nConnID)
+bool	CServiceBase::OnDataHandle(IDataBuffer* pDataBuffer, UINT32 header_size, UINT32 nConnID)
 {
-	std::cout << "---------------------------------------------" << std::endl;
-	std::cout << pDataBuffer->GetBuffer() << std::endl;
+	//std::cout << "---------------------------------------------" << std::endl;
+	//char* bbuf = pDataBuffer->GetBuffer() + header_size;
+	//int nLen = pDataBuffer->GetTotalLenth() - header_size;
+	//char* length = pDataBuffer->GetBuffer() + header_size - 4;
+	//CHttpParser::parser_ws_pack((unsigned char *)bbuf, nLen, (unsigned char*)length);
+
+	m_QueueLock.lock();
+	m_pRecvDataQueue->emplace_back(NetPacket(nConnID,0, pDataBuffer));
+	m_QueueLock.unlock();
+
 	return true;
 }

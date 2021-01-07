@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="ProtobufMsg">
+      <UniqueIdentifier>{c0ac20f3-5ba3-4c30-bd4f-40297f84e9c9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -21,9 +24,33 @@
     <ClCompile Include="CGameService.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\ProtobufMsg\Gateway\Login.pb.cc">
+      <Filter>ProtobufMsg</Filter>
+    </ClCompile>
+    <ClCompile Include="CMsgDispacher.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Dispatcher.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="IMsgHandle.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CGameService.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ProtobufMsg\Gateway\Login.pb.h">
+      <Filter>ProtobufMsg</Filter>
+    </ClInclude>
+    <ClInclude Include="CMsgDispacher.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Dispatcher.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="IMsgHandle.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

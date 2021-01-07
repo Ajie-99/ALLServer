@@ -13,10 +13,21 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="ProtobufMsg">
+      <UniqueIdentifier>{97b3cb58-f4c7-4bdb-bf45-7197669e7b1e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\ProtobufMsg\Gateway\Login.pb.cc">
+      <Filter>ProtobufMsg</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\ProtobufMsg\Gateway\Login.pb.h">
+      <Filter>ProtobufMsg</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

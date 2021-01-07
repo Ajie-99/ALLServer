@@ -55,7 +55,7 @@ struct NetPacket
 
 struct IDataHandler
 {
-	virtual bool OnDataHandle(IDataBuffer* pDataBuffer, UINT32 nConnID) = 0;
+	virtual bool OnDataHandle(IDataBuffer* pDataBuffer,UINT32 header_size,UINT32 nConnID) = 0;
 	virtual bool OnCloseConnect(UINT32 nConnID) = 0;
 	virtual bool OnNewConnect(UINT32 nConnID) = 0;
 };

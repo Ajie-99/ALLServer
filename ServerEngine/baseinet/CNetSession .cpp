@@ -150,6 +150,11 @@ bool CNetSession::ExtractBuffer()
 	if (m_dwDataLen == 0)return true;
 	while (true)
 	{
+		int pkg_size = 0;
+		int header_size = 0;
+		CHttpParser::recv_ws_header((unsigned char*)m_pBufPos, m_dwDataLen, &pkg_size, &header_size);
+		UINT32 dwPacketSize = pkg_size;
+
 		if (m_pCurRecvBuffer != NULL)
 		{
 			if ((m_pCurRecvBuffer->GetTotalLenth() + m_dwDataLen) < m_pCurBufferSize)
@@ -166,14 +171,10 @@ bool CNetSession::ExtractBuffer()
 				m_dwDataLen -= m_pCurBufferSize - m_pCurRecvBuffer->GetTotalLenth();
 				m_pBufPos += m_pCurBufferSize - m_pCurRecvBuffer->GetTotalLenth();
 				m_pCurRecvBuffer->SetTotalLenth(m_pCurBufferSize);
-				m_pDataHandler->OnDataHandle(m_pCurRecvBuffer, GetSessionID());
+				m_pDataHandler->OnDataHandle(m_pCurRecvBuffer, header_size,GetSessionID());
 				m_pCurRecvBuffer = NULL;
 			}
 		}
-		int pkg_size = 0;
-		int header_size = 0;
-		CHttpParser::recv_ws_header((unsigned char*)m_pBufPos, m_dwDataLen, &pkg_size, &header_size);
-		UINT32 dwPacketSize = pkg_size;
 
 		if (dwPacketSize >= MAX_PKG_SIZE)
 		{
@@ -194,7 +195,7 @@ bool CNetSession::ExtractBuffer()
 			m_dwDataLen -= dwPacketSize;
 			m_pBufPos += dwPacketSize;
 			pDataBuffer->SetTotalLenth(dwPacketSize);
-			m_pDataHandler->OnDataHandle(pDataBuffer, GetSessionID());
+			m_pDataHandler->OnDataHandle(pDataBuffer, header_size,GetSessionID());
 			break;
 		}
 		else

@@ -1,0 +1,24 @@
+
+syntax = "proto2";
+
+
+package rpc;
+
+
+message Request
+{
+	required string method = 1;
+	optional bytes serialized_request = 2;
+}
+
+message LoginInfo
+{
+    required string name	= 1;
+    required string pwd		= 2;
+}
+
+
+message LoginOut
+{
+    required string name	= 1;
+}

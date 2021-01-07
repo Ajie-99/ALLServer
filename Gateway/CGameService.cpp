@@ -3,6 +3,7 @@
 
 #include "CGameService.h"
 
+#include "../ProtobufMsg/Gateway/Login.pb.h"
 
 CGameService::CGameService()
 {
@@ -56,5 +57,7 @@ bool CGameService::OnSecondTimer()
 
 bool CGameService::DispatchPacket(NetPacket* pNetPacket)
 {
+	rpc::LoginInfo Login{};
+	Login.ParsePartialFromArray(pNetPacket->m_pDataBuffer->GetData(), pNetPacket->m_pDataBuffer->GetBodyLenth());
 	return true;
 }

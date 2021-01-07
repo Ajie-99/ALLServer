@@ -118,7 +118,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;BOOST_BIND_GLOBAL_PLACEHOLDERS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../3rdParty/boost1_75_0/include;../3rdParty/protobuf3.0/Include;../3rdParty/rapidjson/include;../ServerEngine;../Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../3rdParty/boost1_75_0/include;../3rdParty/protobuf3.0/Include;../3rdParty/rapidjson/include;../ServerEngine;../Common;../ProtobufMsg/Gateway;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -145,11 +145,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\ProtobufMsg\Gateway\Login.pb.cc" />
     <ClCompile Include="CGameService.cpp" />
+    <ClCompile Include="CMsgDispacher.cpp" />
+    <ClCompile Include="Dispatcher.cpp" />
+    <ClCompile Include="IMsgHandle.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\ProtobufMsg\Gateway\Login.pb.h" />
     <ClInclude Include="CGameService.h" />
+    <ClInclude Include="CMsgDispacher.h" />
+    <ClInclude Include="Dispatcher.h" />
+    <ClInclude Include="IMsgHandle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -86,10 +86,7 @@ CNetSession* CNetManager::ConnectTo_Async(std::string strIpAddr, UINT16 sPort)
 bool CNetManager::SendMessageData(UINT32 dwConnID, UINT32 dwMsgID, UINT64 u64TargetID, UINT32 dwUserData, const char* pData, UINT32 dwLen)
 {
 	CNetSession* pConn = CNetSessionMrg::GetInstancePtr()->GetNetSessionByID(dwConnID);
-	if (nullptr == pConn)
-	{
-		return false;
-	}
+	if (nullptr == pConn) return false;
 	//拼接数据包
 	IDataBuffer* pDataBuffer = CBufferAllocator::GetInstancePtr()->AllocDataBuff(dwLen + sizeof(PacketHeader));
 	PacketHeader* pHeader = (PacketHeader*)pDataBuffer->GetBuffer();
@@ -108,4 +105,4 @@ bool CNetManager::SendMessageData(UINT32 dwConnID, UINT32 dwMsgID, UINT64 u64Tar
 	//	return TRUE;
 	}
 	return true;
-}
+} 
